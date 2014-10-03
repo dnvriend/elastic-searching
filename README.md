@@ -4,4 +4,4 @@ Elastic4s DSL formatted in a nice SBT project. It uses the Akka ElasticSearch ex
 
 # Chapters
  - [Finding Exact Values](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/_finding_exact_values.html) -> [com.github.dnvriend.FindingExactValuesTest](https://github.com/dnvriend/elastic-searching/blob/master/src/test/scala/com/github/dnvriend/FindingExactValuesTest.scala)
- - [Combining Filters](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/combining-filters.html) -> [com.github.dnvriend.CombiningFiltersTest]()
+ - [Combining Filters](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/combining-filters.html) -> [com.github.dnvriend.CombiningFiltersTest](https://github.com/dnvriend/elastic-searching/blob/master/src/test/scala/com/github/dnvriend/CombiningFiltersTest.scala)
