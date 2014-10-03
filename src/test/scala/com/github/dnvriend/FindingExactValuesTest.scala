@@ -240,12 +240,9 @@ class FindingExactValuesTest extends FlatSpec with Matchers with BeforeAndAfterA
 
    */
 
-  override protected def beforeAll(): Unit = {
-
-    Thread.sleep((5 seconds).toMillis)
-  }
-
   override protected def afterAll(): Unit = {
+    Await.ready(es.client.execute(delete index "my_store"), 5 seconds)
+    Thread.sleep((1 second).toMillis)
     system.shutdown()
   }
 }
