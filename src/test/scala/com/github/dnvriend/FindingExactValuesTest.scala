@@ -3,7 +3,6 @@ package com.github.dnvriend
 import akka.actor.ActorSystem
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.github.dnvriend.elasticsearch.extension.ElasticSearch
-import com.sksamuel.elastic4s.mappings.FieldType.{StringType, IntegerType}
 import org.scalatest.{BeforeAndAfterAll, Matchers, FlatSpec}
 import Matchers._
 
@@ -36,31 +35,9 @@ class FindingExactValuesTest extends FlatSpec with Matchers with BeforeAndAfterA
   "ElasticSearch" should "create an index and index products" in {
     Await.ready(es.client.execute(delete index "my_store"), 5 seconds)
 
-    Await.ready(es.client.execute(
-      create index "my_store" mappings (
-        "products" as (
-          "price" typed IntegerType,
-          "productID" typed StringType
-          )
-        )
-    ), 5 seconds)
+    Await.ready(es.client.execute(defaultMyStoreCreateIndexDefinition), 5 seconds)
 
-    Await.ready(es.client.execute(
-      bulk (
-        index into "my_store/products" fields(
-          "price" -> 10, "productID" ->  "XHDK-A-1293-#fJ3"
-          ) id 1,
-        index into "my_store/products" fields(
-          "price" -> 20, "productID" -> "KDKE-B-9947-#kL5"
-          ) id 2,
-        index into "my_store/products" fields(
-          "price" -> 30, "productID" -> "JODL-X-1937-#pV7"
-          ) id 3,
-        index into "my_store/products" fields(
-          "price" -> 30, "productID" -> "QQPX-R-3956-#aD8"
-          ) id 4
-      )
-    ), 5 seconds)
+    Await.ready(es.client.execute(bulkProductIndexDefinition), 5 seconds)
 
     Thread.sleep((2 seconds).toMillis)
   }
@@ -75,7 +52,7 @@ class FindingExactValuesTest extends FlatSpec with Matchers with BeforeAndAfterA
     Our goal is to find all products with a certain price. You may be familiar with SQL if you are coming from a relational
     database background. If we expressed this query as an SQL query, it would look like this:
 
-    SELECT document
+    SELECT product
     FROM   products
     WHERE  price = 20
 
@@ -172,31 +149,9 @@ class FindingExactValuesTest extends FlatSpec with Matchers with BeforeAndAfterA
   it should "recreate the index with no analyzer on the productID field" in {
     Await.ready(es.client.execute(delete index "my_store"), 5 seconds)
 
-    Await.ready(es.client.execute(
-      create index "my_store" mappings (
-        "products" as (
-          "price" typed IntegerType,
-          "productID" typed StringType index "not_analyzed"
-          )
-        )
-    ), 5 seconds)
+    Await.ready(es.client.execute(productIdFieldNotAnalyzedMyStoreCreateIndexDefinition), 5 seconds)
 
-    Await.ready(es.client.execute(
-      bulk (
-        index into "my_store/products" fields(
-          "price" -> 10, "productID" ->  "XHDK-A-1293-#fJ3"
-          ) id 1,
-        index into "my_store/products" fields(
-          "price" -> 20, "productID" -> "KDKE-B-9947-#kL5"
-          ) id 2,
-        index into "my_store/products" fields(
-          "price" -> 30, "productID" -> "JODL-X-1937-#pV7"
-          ) id 3,
-        index into "my_store/products" fields(
-          "price" -> 30, "productID" -> "QQPX-R-3956-#aD8"
-          ) id 4
-      )
-    ), 5 seconds)
+    Await.ready(es.client.execute(bulkProductIndexDefinition), 5 seconds)
 
     Thread.sleep((2 seconds).toMillis)
   }
