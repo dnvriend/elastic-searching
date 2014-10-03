@@ -3,4 +3,4 @@ How to use ElasticSearch for searching data. This is the adaptation of the Elast
 Elastic4s DSL formatted in a nice SBT project. It uses the Akka ElasticSearch extension to launch a node.
 
 # Chapters
- - Finding Exact Values -> com.github.dnvriend.FindingExactValuesTest
+ - [Finding Exact Values](http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/_finding_exact_values.html) -> [com.github.dnvriend.FindingExactValuesTest](https://github.com/dnvriend/elastic-searching/blob/master/src/test/scala/com/github/dnvriend/FindingExactValuesTest.scala)
