@@ -1,18 +1,17 @@
-package com.github.dnvriend
+package com.github.dnvriend.structured
 
 import akka.actor.ActorSystem
-import com.sksamuel.elastic4s.ElasticDsl._
 import com.github.dnvriend.elasticsearch.extension.ElasticSearch
+import com.sksamuel.elastic4s.ElasticDsl._
 import org.elasticsearch.search.sort.SortOrder
-import org.scalatest.{BeforeAndAfterAll, Matchers, FlatSpec}
-import Matchers._
+import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 class CombiningFiltersTest extends FlatSpec with Matchers with BeforeAndAfterAll {
-  import Dsl._
-  import Dsl.JsonMarshaller._
+  import com.github.dnvriend.Dsl.JsonMarshaller._
+  import com.github.dnvriend.Dsl._
 
   val system = ActorSystem("TestSystem")
   implicit val ec = system.dispatcher
