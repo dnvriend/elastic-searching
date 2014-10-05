@@ -5,12 +5,17 @@ import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.mappings.FieldType.{StringType, IntegerType}
 import org.elasticsearch.action.get.GetResponse
 import org.elasticsearch.action.search.SearchResponse
+import org.elasticsearch.search.aggregations.metrics.avg.Avg
+import org.elasticsearch.search.aggregations.metrics.max.Max
+import org.elasticsearch.search.aggregations.metrics.min.{Min, InternalMin}
+import org.elasticsearch.search.aggregations.metrics.sum.Sum
 import spray.httpx.SprayJsonSupport
 
 import scala.util.Try
 
 object Dsl {
   import spray.json._
+  import scala.collection.JavaConversions._
 
   case class Product(price: Double, productID: String)
 
@@ -21,6 +26,14 @@ object Dsl {
     response.getHits.getHits.toList.map(_.getSourceAsString).map(to[T]).flatten
 
   def to[T](jsonString: String)(implicit ev: spray.json.JsonReader[T]): Option[T] = Try(jsonString.parseJson.convertTo[T]).toOption
+
+  def aggr(response: SearchResponse): Map[String, Double] =
+    response.getAggregations.asMap().toMap.mapValues {
+      case e: Min => e.getValue
+      case e: Max => e.getValue
+      case e: Avg => e.getValue
+      case e: Sum => e.getValue
+    }
 
   def bulkProductIndexDefinition: BulkDefinition =
     bulk (
@@ -53,7 +66,6 @@ object Dsl {
         "productID" typed StringType index "not_analyzed"
         )
       )
-
 
   object JsonMarshaller extends DefaultJsonProtocol with SprayJsonSupport {
     implicit val productFormat = jsonFormat2(Product)

@@ -30,7 +30,7 @@ libraryDependencies ++=
       "io.spray"            %% "spray-client"                   % sprayV,
       "io.spray"            %% "spray-json"                     % jsonV,
       "ch.qos.logback"       % "logback-classic"                % "1.1.2",
-      "com.github.dnvriend" %% "akka-elasticsearch"             % "1.0.0",
+      "com.github.dnvriend" %% "akka-elasticsearch"             % "1.0.1",
       "com.github.dnvriend" %% "akka-persistence-inmemory"      % "0.0.2" % "test",
       "com.typesafe.akka"   %% "akka-testkit"                   % akkaV   % "test",
       "io.spray"            %% "spray-testkit"                  % sprayV  % "test",
