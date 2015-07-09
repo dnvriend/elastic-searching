@@ -2,6 +2,8 @@
 How to use ElasticSearch for searching data. This is the adaptation of the ElasticSearch documentation to 
 Elastic4s DSL formatted in a nice SBT project. It uses the Akka ElasticSearch extension to launch a node.
 
+[![License](http://img.shields.io/:license-Apache%202-red.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 # Chapters
 
 ## Structured Search
