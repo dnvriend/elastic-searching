@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.dnvriend
+package com.github.dnvriend.util
 
 import org.scalatest.exceptions.TestFailedException
 

@@ -84,8 +84,8 @@ package object dnvriend {
       "products" as (
         "price" typed IntegerType,
         "productID" typed StringType index StringFieldMappingAttributes.No
-        )
       )
+    )
 
   object StringFieldMappingAttributes {
     /**

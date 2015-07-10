@@ -23,6 +23,7 @@ import akka.actor.ActorSystem
 import akka.event.{ Logging, LoggingAdapter }
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.Timeout
+import com.github.dnvriend.util.{ BlockUntil, CheckConnection, ElasticSugar }
 import com.sksamuel.elastic4s.ElasticDsl._
 import org.scalatest._
 import org.scalatest.concurrent.{ Eventually, ScalaFutures }
