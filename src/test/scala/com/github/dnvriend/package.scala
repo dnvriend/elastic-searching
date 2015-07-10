@@ -67,7 +67,7 @@ package object dnvriend {
     create index "my_store" mappings (
       "products" as (
         "price" typed IntegerType,
-        "productID" typed StringType
+        "productID" typed StringType index StringFieldMappingAttributes.Analyzed
       )
     )
 
@@ -75,7 +75,32 @@ package object dnvriend {
     create index "my_store" mappings (
       "products" as (
         "price" typed IntegerType,
-        "productID" typed StringType index "not_analyzed"
+        "productID" typed StringType index StringFieldMappingAttributes.NotAnalyzed
       )
     )
+
+  def productIdFieldNoAnalyzerMyStoreCreateIndexDefinition: CreateIndexDefinition =
+    create index "my_store" mappings (
+      "products" as (
+        "price" typed IntegerType,
+        "productID" typed StringType index StringFieldMappingAttributes.No
+        )
+      )
+
+  object StringFieldMappingAttributes {
+    /**
+     * (Default) First analyze the string and then index it.
+     * In other words, index this field as full text.
+     */
+    final val Analyzed = "analyzed"
+    /**
+     * Index this field, so it is searchable, but index the
+     * value exactly as specified. Do not analyze it.
+     */
+    final val NotAnalyzed = "not_analyzed"
+    /**
+     * Don’t index this field at all. This field will not be searchable.
+     */
+    final val No = "no"
+  }
 }

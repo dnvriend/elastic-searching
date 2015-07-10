@@ -8,12 +8,17 @@ scalaVersion := "2.11.7"
 
 resolvers += "dnvriend at bintray" at "http://dl.bintray.com/dnvriend/maven"
 
-libraryDependencies ++= Seq(
-  "com.typesafe.akka"   %% "akka-actor"                         % "2.3.12",
-  "com.typesafe.akka"   %% "akka-http-spray-json-experimental"  % "1.0-RC4",
-  "com.github.dnvriend" %% "akka-elasticsearch"                 % "1.0.4",
-  "org.scalatest"       %% "scalatest"                          % "2.2.4" % Test
-)
+libraryDependencies ++= {
+  val akkaVersion = "2.3.12"
+  val akkaStreamVersion = "1.0-RC4"
+  Seq(
+    "com.typesafe.akka"      %% "akka-actor"                        % akkaVersion,
+    "com.typesafe.akka"      %% "akka-slf4j"                        % akkaVersion,
+    "com.typesafe.akka"      %% "akka-http-spray-json-experimental" % akkaStreamVersion,
+    "com.sksamuel.elastic4s" %% "elastic4s-core"                    % "1.6.4",
+    "org.scalatest"          %% "scalatest"                         % "2.2.4" % Test
+  )
+}
 
 licenses += ("Apache-2.0", url("http://opensource.org/licenses/apache2.0.php"))
 

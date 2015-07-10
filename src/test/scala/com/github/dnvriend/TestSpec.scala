@@ -23,9 +23,7 @@ import akka.actor.ActorSystem
 import akka.event.{ Logging, LoggingAdapter }
 import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.Timeout
-import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import org.elasticsearch.common.settings.ImmutableSettings
 import org.scalatest._
 import org.scalatest.concurrent.{ Eventually, ScalaFutures }
 import org.scalatest.exceptions.TestFailedException
@@ -38,7 +36,7 @@ import scala.util.Try
 
 case class Product(price: Double, productID: String)
 
-class TestSpec extends FlatSpec with Matchers with ScalaFutures with TryValues with OptionValues with BeforeAndAfterEach with BeforeAndAfterAll with BlockUntil with Eventually with ElasticSearchShutdown with CheckConnection with DefaultJsonProtocol {
+class TestSpec extends FlatSpec with Matchers with ScalaFutures with ElasticSugar with TryValues with OptionValues with BeforeAndAfterEach with BeforeAndAfterAll with BlockUntil with Eventually with CheckConnection with DefaultJsonProtocol {
 
   implicit val productFormat = jsonFormat2(Product)
   implicit val timeout: Timeout = Timeout(10.seconds)
@@ -47,17 +45,6 @@ class TestSpec extends FlatSpec with Matchers with ScalaFutures with TryValues w
   implicit val mat: Materializer = ActorMaterializer()
   implicit val log: LoggingAdapter = Logging(system, this.getClass)
   implicit val pc: PatienceConfig = PatienceConfig(timeout = 60.seconds)
-
-  val settings = ImmutableSettings.settingsBuilder()
-    .put("node.http.enabled", false)
-    .put("http.enabled", false)
-    .put("index.number_of_shards", 1)
-    .put("index.number_of_replicas", 0)
-    .put("script.disable_dynamic", false)
-    .put("index.refresh_interval", "1s")
-    .put("es.logger.level", "WARN")
-
-  implicit val client = ElasticClient.local(settings.build)
 
   def randomId: String = UUID.randomUUID.toString
   val id: String = randomId
@@ -85,7 +72,7 @@ class TestSpec extends FlatSpec with Matchers with ScalaFutures with TryValues w
   def fromClasspathAsStream(fileName: String): InputStream =
     getClass.getClassLoader.getResourceAsStream(fileName)
 
-  override protected def beforeAll(): Unit = {
+  def indexMyStoreWithNotAnalyzed(): Unit = {
     {
       for {
         r1 ← client.execute(delete index "my_store") recoverWith { case t: Throwable ⇒ Future.successful(()) }
@@ -100,6 +87,8 @@ class TestSpec extends FlatSpec with Matchers with ScalaFutures with TryValues w
       client.execute(search in "my_store/products").map(to[Product]).futureValue.size shouldBe 4
     }
   }
+
+  override protected def beforeAll(): Unit = indexMyStoreWithNotAnalyzed()
 
   override protected def afterAll(): Unit = {
     system.shutdown()
