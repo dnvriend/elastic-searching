@@ -25,6 +25,7 @@ import akka.stream.{ ActorMaterializer, Materializer }
 import akka.util.Timeout
 import com.github.dnvriend.util.{ BlockUntil, CheckConnection, ElasticSugar }
 import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.CreateIndexDefinition
 import org.scalatest._
 import org.scalatest.concurrent.{ Eventually, ScalaFutures }
 import org.scalatest.exceptions.TestFailedException
@@ -73,11 +74,11 @@ class TestSpec extends FlatSpec with Matchers with ScalaFutures with ElasticSuga
   def fromClasspathAsStream(fileName: String): InputStream =
     getClass.getClassLoader.getResourceAsStream(fileName)
 
-  def indexMyStoreWithNotAnalyzed(): Unit = {
+  def createIndex(indexDef: CreateIndexDefinition): Unit = {
     {
       for {
         r1 ← client.execute(delete index "my_store") recoverWith { case t: Throwable ⇒ Future.successful(()) }
-        r2 ← client.execute(productIdFieldNotAnalyzedMyStoreCreateIndexDefinition)
+        r2 ← client.execute(indexDef)
         r3 ← client.execute(bulkProductIndexDefinition)
       } yield r3
     }.toTry recover {
@@ -89,7 +90,8 @@ class TestSpec extends FlatSpec with Matchers with ScalaFutures with ElasticSuga
     }
   }
 
-  override protected def beforeAll(): Unit = indexMyStoreWithNotAnalyzed()
+  override protected def beforeEach(): Unit =
+    createIndex(productIdFieldNotAnalyzedMyStoreCreateIndexDefinition)
 
   override protected def afterAll(): Unit = {
     system.shutdown()
