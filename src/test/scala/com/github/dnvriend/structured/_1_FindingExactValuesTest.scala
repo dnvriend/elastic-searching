@@ -20,7 +20,7 @@ package structured
 import com.sksamuel.elastic4s.ElasticDsl._
 import com.sksamuel.elastic4s.CreateIndexDefinition
 
-class FindingExactValuesTest extends TestSpec {
+class _1_FindingExactValuesTest extends TestSpec {
 
   /**
    * # Finding exact values
@@ -52,12 +52,12 @@ class FindingExactValuesTest extends TestSpec {
    */
   "FindingExactValuesTest" should "find four products in the index" in {
     //
-    // SELECT * 
-    // FROM products
+    // SELECT * FROM products
     //
-    val q = search in "my_store/products"
-    val products = client.execute(q).map(to[Product]).futureValue
-    products.size shouldBe 4
+    val res = client.execute {
+      search in "my_store" / "products"
+    }.await
+    res.getHits.getTotalHits shouldBe 4
   }
 
   /**
@@ -78,27 +78,27 @@ class FindingExactValuesTest extends TestSpec {
    * see: https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-filter.html
    */
   it should "filter the full list of products and find only one Product" in {
-    val q = search in "my_store/products" query {
-      filteredQuery query {
-        matchall
-      } filter {
-        termFilter("price", "20")
+    val res = client.execute {
+      search in "my_store" / "products" query {
+        filteredQuery query {
+          matchall
+        } filter {
+          termFilter("price", "20")
+        }
       }
-    }
-
-    val products = client.execute(q).map(to[Product]).futureValue
-    products.size shouldBe 1
+    }.await
+    res.getHits.getTotalHits shouldBe 1
   }
 
   it should "filter the full list of products and find only one Product omitting the matchall query" in {
-    val q = search in "my_store/products" query {
-      filteredQuery filter {
-        termFilter("price", "20")
+    val res = client.execute {
+      search in "my_store" / "products" query {
+        filteredQuery filter {
+          termFilter("price", "20")
+        }
       }
-    }
-
-    val products = client.execute(q).map(to[Product]).futureValue
-    products.size shouldBe 1
+    }.await
+    res.getHits.getTotalHits shouldBe 1
   }
 
   /**

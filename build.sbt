@@ -15,7 +15,7 @@ libraryDependencies ++= {
     "com.typesafe.akka"      %% "akka-actor"                        % akkaVersion,
     "com.typesafe.akka"      %% "akka-slf4j"                        % akkaVersion,
     "com.typesafe.akka"      %% "akka-http-spray-json-experimental" % akkaStreamVersion,
-    "com.sksamuel.elastic4s" %% "elastic4s-core"                    % "1.6.4",
+    "com.sksamuel.elastic4s" %% "elastic4s-core"                    % "1.6.5",
     "org.scalatest"          %% "scalatest"                         % "2.2.4" % Test
   )
 }
